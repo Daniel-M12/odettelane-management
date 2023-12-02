@@ -28,4 +28,19 @@ public class Garment {
     @Column(name = "\"tipo_co_id_tipo\"")
     private Integer typeId;
 
+    @ManyToOne
+    @JoinColumn(name = "\"talla_co_id_talla\"", insertable = false, updatable = false)
+    private Size size;
+    @ManyToOne
+    @JoinColumn(name = "\"color_co_id_color\"", insertable = false, updatable = false)
+    private Color color;
+    @ManyToOne
+    @JoinColumn(name = "\"tela_co_id_tela\"", insertable = false, updatable = false)
+    private Fabric fabric;
+    @ManyToOne
+    @JoinColumn(name = "\"categoria_co_id_categoria\"", insertable = false, updatable = false)
+    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "\"tipo_co_id_tipo\"", insertable = false, updatable = false)
+    private Type type;
 }

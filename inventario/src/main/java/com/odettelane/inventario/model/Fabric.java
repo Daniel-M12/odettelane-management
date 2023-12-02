@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -15,4 +17,7 @@ public class Fabric {
     private Integer id;
     @Column(name = "\"no_tela\"")
     private String fabric;
+
+    @OneToMany(mappedBy = "fabric", cascade = CascadeType.ALL)
+    private List<Garment> garments;
 }
