@@ -1,4 +1,4 @@
-package com.odettelane.inventario.model;
+package com.odettelane.inventario.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,8 +20,8 @@ public class Inventory {
     @Column(name = "\"nu_cantidad\"")
     private Integer quantity;
 
-    //@Column(name = "\"prenda_co_id_prenda\"", insertable = false, updatable = false)
-    //private Integer garmentId;
+    @Column(name = "\"prenda_co_id_prenda\"", insertable = false, updatable = false)
+    private Integer garmentId;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "\"prenda_co_id_prenda\"", referencedColumnName = "\"co_id_prenda\"")
