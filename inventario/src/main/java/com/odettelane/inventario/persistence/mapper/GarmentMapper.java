@@ -48,5 +48,5 @@ public abstract class GarmentMapper {
         return garmentDto;
     }
 
-    public abstract List<GarmentDto> garmentDtos(List<Garment> garments);
+    public abstract List<GarmentDto> toGarmentDtos(List<Garment> garments);
 }

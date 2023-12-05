@@ -1,6 +1,6 @@
 package com.odettelane.inventario.controller;
 
-import com.odettelane.inventario.model.dto.GarmentDto;
+import com.odettelane.inventario.model.request.GarmentPageRequest;
 import com.odettelane.inventario.persistence.entity.Garment;
 import com.odettelane.inventario.service.GarmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,15 @@ public class GarmentController {
     @Autowired
     public GarmentController(GarmentService garmentService) {
         this.garmentService = garmentService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAll(@RequestBody GarmentPageRequest pageRequest){
+        try {
+            return new ResponseEntity<>(garmentService.getAll(pageRequest), HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/{garmentId}")
@@ -41,6 +50,25 @@ public class GarmentController {
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+    }
 
+    @PutMapping("/{garmentId}")
+    public ResponseEntity<?> update(@RequestBody Garment garment, @PathVariable Integer garmentId){
+        try {
+            Garment updatedGarment = garmentService.update(garment, garmentId);
+
+            return new ResponseEntity<>(updatedGarment, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/{garmentId}")
+    public ResponseEntity<?> delete(@PathVariable Integer garmentId){
+        try {
+            return new ResponseEntity<>(garmentService.delete(garmentId), HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
