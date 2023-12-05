@@ -1,5 +1,6 @@
 package com.odettelane.inventario.service;
 
+import com.odettelane.inventario.exceptions.IdNotProvidedException;
 import com.odettelane.inventario.model.request.GarmentPageRequest;
 import com.odettelane.inventario.persistence.entity.Garment;
 import com.odettelane.inventario.model.dto.GarmentDto;
@@ -47,16 +48,14 @@ public class GarmentServiceImpl implements GarmentService{
     }
 
     @Override
-    public GarmentDto read(Integer garmentId) {
-
-        GarmentDto garmentDto = mapper.garmentToDto(findById(garmentId));
-
-        return garmentDto;
+    public GarmentDto read(Integer garmentId) throws IdNotProvidedException {
+        if (garmentId == null) throw new IdNotProvidedException("Cannot read without providing an id");
+        return mapper.garmentToDto(findById(garmentId));
     }
 
     @Override
-    public Garment update(Garment garment, Integer id) {
-        if (id == null) throw new RuntimeException("Cannot update without providing an id");
+    public Garment update(Garment garment, Integer id) throws IdNotProvidedException {
+        if (id == null) throw new IdNotProvidedException("Cannot update without providing an id");
 
         Garment oldGarment = findById(id);
 
@@ -72,8 +71,8 @@ public class GarmentServiceImpl implements GarmentService{
     }
 
     @Override
-    public String delete(Integer garmentId) {
-        if (garmentId == null) throw new RuntimeException("Cannot update without providing an id");
+    public String delete(Integer garmentId) throws IdNotProvidedException {
+        if (garmentId == null) throw new IdNotProvidedException("Cannot delete without providing an id");
 
         repository.delete(findById(garmentId));
 
