@@ -1,6 +1,7 @@
 package com.odettelane.inventario.service;
 
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
+import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.model.dto.SizeDto;
 import com.odettelane.inventario.persistence.entity.Size;
 import com.odettelane.inventario.persistence.mapper.SizeMapper;
@@ -29,8 +30,8 @@ public class SizeServiceImpl implements SizeService{
     }
 
     @Override
-    public Size create(SizeDto sizeDto) {
-        if (sizeDto.getSize() == null) throw new RuntimeException("You must provide a size name");
+    public Size create(SizeDto sizeDto) throws AttributeNotProvidedException {
+        if (sizeDto.getSize() == null) throw new AttributeNotProvidedException("size");
 
         return repository.save(mapper.dtoToSize(sizeDto));
     }
@@ -38,15 +39,16 @@ public class SizeServiceImpl implements SizeService{
     @Override
     public SizeDto read(Integer sizeId) throws IdNotProvidedException {
         if (sizeId == null) throw new IdNotProvidedException("Cannot read without providing an id");
-        return mapper.sizetoDto(findById(sizeId));
+
+        return mapper.sizeToDto(findById(sizeId));
     }
 
     @Override
-    public SizeDto update(SizeDto sizeDto, Integer id) throws IdNotProvidedException {
+    public SizeDto update(SizeDto sizeDto, Integer id) throws IdNotProvidedException, AttributeNotProvidedException {
         if (id == null) throw new IdNotProvidedException("Cannot update without providing an id");
-        if (sizeDto.getSize() == null) throw new RuntimeException("You must provide a size name");
+        if (sizeDto.getSize() == null) throw new AttributeNotProvidedException("size");
 
-        return mapper.sizetoDto(repository.save(mapper.dtoToSize(sizeDto)));
+        return mapper.sizeToDto(repository.save(mapper.dtoToSize(sizeDto)));
     }
 
     @Override

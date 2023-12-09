@@ -1,8 +1,6 @@
 package com.odettelane.inventario.controller;
 
 import com.odettelane.inventario.model.dto.SizeDto;
-import com.odettelane.inventario.model.request.GarmentPageRequest;
-import com.odettelane.inventario.persistence.entity.Garment;
 import com.odettelane.inventario.persistence.entity.Size;
 import com.odettelane.inventario.service.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ public class SizeController {
     }
 
     @GetMapping("/{sizeId}")
-    public ResponseEntity<?> getGarment(@PathVariable Integer sizeId){
+    public ResponseEntity<?> getSize(@PathVariable Integer sizeId){
         try {
             return new ResponseEntity<>(sizeService.read(sizeId),HttpStatus.OK);
         } catch (Exception e){
@@ -57,9 +55,9 @@ public class SizeController {
     @PutMapping("/{sizeId}")
     public ResponseEntity<?> update(@RequestBody SizeDto sizeDto, @PathVariable Integer sizeId){
         try {
-            SizeDto updatedGarment = sizeService.update(sizeDto, sizeId);
+            SizeDto updatedSize = sizeService.update(sizeDto, sizeId);
 
-            return new ResponseEntity<>(updatedGarment, HttpStatus.OK);
+            return new ResponseEntity<>(updatedSize, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

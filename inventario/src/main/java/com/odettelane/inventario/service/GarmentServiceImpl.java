@@ -1,5 +1,6 @@
 package com.odettelane.inventario.service;
 
+import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
 import com.odettelane.inventario.model.request.GarmentPageRequest;
 import com.odettelane.inventario.persistence.entity.Garment;
@@ -27,11 +28,11 @@ public class GarmentServiceImpl implements GarmentService{
     }
 
     @Override
-    public Garment create(@NotNull Garment garment) {
-        if (garment.getSizeId() == null) throw new RuntimeException("You must provide a size"); //TODO: Personalizar excepciones
-        if (garment.getColorId() == null) throw new RuntimeException("You must provide a color");
-        if (garment.getFabricId() == null) throw new RuntimeException("You must provide a fabric");
-        if (garment.getCategoryId() == null) throw new RuntimeException("You must provide a category");
+    public Garment create(@NotNull Garment garment) throws AttributeNotProvidedException {
+        if (garment.getSizeId() == null) throw new AttributeNotProvidedException("size");
+        if (garment.getColorId() == null) throw new AttributeNotProvidedException("color");
+        if (garment.getFabricId() == null) throw new AttributeNotProvidedException("fabric");
+        if (garment.getCategoryId() == null) throw new AttributeNotProvidedException("category");
         if (garment.getTypeId() == null) garment.setTypeId(1);
 
         return repository.save(garment);
