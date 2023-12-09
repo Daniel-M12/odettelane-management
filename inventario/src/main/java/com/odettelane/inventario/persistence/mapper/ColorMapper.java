@@ -10,6 +10,7 @@ import java.util.List;
 public abstract class ColorMapper {
     public ColorDto colorToDto(Color color){
         ColorDto colorDto = ColorDto.builder()
+                .id(color.getId())
                 .primaryColor(color.getPrimaryColor())
                 .build();
 

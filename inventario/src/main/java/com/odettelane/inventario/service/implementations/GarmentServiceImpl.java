@@ -1,4 +1,4 @@
-package com.odettelane.inventario.service;
+package com.odettelane.inventario.service.implementations;
 
 import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
@@ -7,6 +7,7 @@ import com.odettelane.inventario.persistence.entity.Garment;
 import com.odettelane.inventario.model.dto.GarmentDto;
 import com.odettelane.inventario.persistence.mapper.GarmentMapper;
 import com.odettelane.inventario.repository.GarmentRepository;
+import com.odettelane.inventario.service.GarmentService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GarmentServiceImpl implements GarmentService{
+public class GarmentServiceImpl implements GarmentService {
     private final GarmentRepository repository;
     private final GarmentMapper mapper;
 

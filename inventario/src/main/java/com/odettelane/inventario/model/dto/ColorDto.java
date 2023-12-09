@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ColorDto {
+    private Integer id;
     private String primaryColor;
     private String secondaryColor;
     private String distribution;

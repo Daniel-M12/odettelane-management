@@ -8,5 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SizeDto {
+    private Integer id;
     private String size;
 }

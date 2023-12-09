@@ -1,12 +1,12 @@
-package com.odettelane.inventario.service;
+package com.odettelane.inventario.service.implementations;
 
 import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
 import com.odettelane.inventario.model.dto.ColorDto;
 import com.odettelane.inventario.persistence.entity.Color;
-import com.odettelane.inventario.persistence.entity.Size;
 import com.odettelane.inventario.persistence.mapper.ColorMapper;
 import com.odettelane.inventario.repository.ColorRepository;
+import com.odettelane.inventario.service.ColorSerivice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ColorServiceImpl implements ColorSerivice{
+public class ColorServiceImpl implements ColorSerivice {
     private final ColorRepository repository;
     private final ColorMapper mapper;
 

@@ -1,4 +1,4 @@
-package com.odettelane.inventario.service;
+package com.odettelane.inventario.service.implementations;
 
 import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
@@ -6,6 +6,7 @@ import com.odettelane.inventario.model.dto.FabricDto;
 import com.odettelane.inventario.persistence.entity.Fabric;
 import com.odettelane.inventario.persistence.mapper.FabricMapper;
 import com.odettelane.inventario.repository.FabricRepository;
+import com.odettelane.inventario.service.FabricService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FabricServiceImpl implements FabricService{
+public class FabricServiceImpl implements FabricService {
     private final FabricRepository repository;
     private final FabricMapper mapper;
 

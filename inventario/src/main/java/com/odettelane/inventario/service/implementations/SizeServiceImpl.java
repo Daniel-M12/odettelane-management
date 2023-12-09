@@ -1,4 +1,4 @@
-package com.odettelane.inventario.service;
+package com.odettelane.inventario.service.implementations;
 
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
 import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
@@ -6,6 +6,7 @@ import com.odettelane.inventario.model.dto.SizeDto;
 import com.odettelane.inventario.persistence.entity.Size;
 import com.odettelane.inventario.persistence.mapper.SizeMapper;
 import com.odettelane.inventario.repository.SizeRepository;
+import com.odettelane.inventario.service.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SizeServiceImpl implements SizeService{
+public class SizeServiceImpl implements SizeService {
     private final SizeRepository repository;
     private final SizeMapper mapper;
 

@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FabricDto {
+public class TypeDto {
     private Integer id;
-    private String fabric;
+    private String type;
 }
