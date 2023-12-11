@@ -20,10 +20,10 @@ public class Inventory {
     @Column(name = "\"nu_cantidad\"")
     private Integer quantity;
 
-    @Column(name = "\"prenda_co_id_prenda\"", insertable = false, updatable = false)
-    private Integer garmentId;
+    /*@Column(name = "\"prenda_co_id_prenda\"", insertable = false, updatable = false)
+    private Integer garmentId;*/
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "\"prenda_co_id_prenda\"", referencedColumnName = "\"co_id_prenda\"")
     private Garment garment;
 }

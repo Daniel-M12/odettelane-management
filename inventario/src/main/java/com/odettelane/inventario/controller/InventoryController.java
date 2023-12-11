@@ -4,28 +4,31 @@ import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
 import com.odettelane.inventario.exceptions.ItemNotFoundException;
 import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
+import com.odettelane.inventario.model.dto.InventoryDto;
+import com.odettelane.inventario.model.request.InventoryRequest;
 import com.odettelane.inventario.model.request.PageRequestOL;
-import com.odettelane.inventario.persistence.entity.Garment;
-import com.odettelane.inventario.service.GarmentService;
+import com.odettelane.inventario.persistence.entity.Inventory;
+import com.odettelane.inventario.service.InventoryService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/garments")
-public class GarmentController {
-    private final GarmentService garmentService;
+@RequestMapping("/inventoryItems")
+public class InventoryController {
+    private final InventoryService inventoryService;
 
     @Autowired
-    public GarmentController(GarmentService garmentService) {
-        this.garmentService = garmentService;
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
     }
 
     @GetMapping
     public ResponseEntity<?> getAll(@RequestBody PageRequestOL pageRequestOL){
         try {
-            return new ResponseEntity<>(garmentService.getAll(pageRequestOL), HttpStatus.OK);
+            return new ResponseEntity<>(inventoryService.getAll(pageRequestOL), HttpStatus.OK);
         } catch (AttributeNotProvidedException | NotNegativeAttributeException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -33,10 +36,10 @@ public class GarmentController {
         }
     }
 
-    @GetMapping("/{garmentId}")
-    public ResponseEntity<?> getGarment(@PathVariable Integer garmentId){
+    @GetMapping("/{inventoryId}")
+    public ResponseEntity<?> getInventoryItem(@PathVariable Integer inventoryId){
         try {
-            return new ResponseEntity<>(garmentService.read(garmentId),HttpStatus.OK);
+            return new ResponseEntity<>(inventoryService.read(inventoryId),HttpStatus.OK);
         } catch (IdNotProvidedException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ItemNotFoundException e){
@@ -47,24 +50,26 @@ public class GarmentController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Garment garment){
+    public ResponseEntity<?> save(@RequestBody @NotNull InventoryRequest inventoryRequest){
         try {
-            Garment newGarment = garmentService.create(garment);
-            return new ResponseEntity<>(newGarment, HttpStatus.OK);
-        } catch (AttributeNotProvidedException | NotNegativeAttributeException e) {
+            Inventory newInventoryItem = inventoryService.create(inventoryRequest);
+            return new ResponseEntity<>(newInventoryItem, HttpStatus.OK);
+        } catch (AttributeNotProvidedException | IdNotProvidedException | NotNegativeAttributeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
-    @PutMapping("/{garmentId}")
-    public ResponseEntity<?> update(@RequestBody Garment garment, @PathVariable Integer garmentId){
+    @PutMapping("/{inventoryId}")
+    public ResponseEntity<?> update(@RequestParam Integer quantity, @PathVariable Integer inventoryId){
         try {
-            Garment updatedGarment = garmentService.update(garment, garmentId);
-            return new ResponseEntity<>(updatedGarment, HttpStatus.OK);
-        } catch (IdNotProvidedException | NotNegativeAttributeException e){
+            InventoryDto updatedInventoryItem = inventoryService.update(quantity, inventoryId);
+            return new ResponseEntity<>(updatedInventoryItem, HttpStatus.OK);
+        } catch (IdNotProvidedException | AttributeNotProvidedException | NotNegativeAttributeException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ItemNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -73,10 +78,10 @@ public class GarmentController {
         }
     }
 
-    @DeleteMapping("/{garmentId}")
-    public ResponseEntity<?> delete(@PathVariable Integer garmentId){
+    @DeleteMapping("/{inventoryId}")
+    public ResponseEntity<?> delete(@PathVariable Integer inventoryId){
         try {
-            return new ResponseEntity<>(garmentService.delete(garmentId), HttpStatus.OK);
+            return new ResponseEntity<>(inventoryService.delete(inventoryId), HttpStatus.OK);
         } catch (IdNotProvidedException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ItemNotFoundException e){

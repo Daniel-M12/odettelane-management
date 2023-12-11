@@ -2,7 +2,9 @@ package com.odettelane.inventario.service.implementations;
 
 import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
-import com.odettelane.inventario.model.request.GarmentPageRequest;
+import com.odettelane.inventario.exceptions.ItemNotFoundException;
+import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
+import com.odettelane.inventario.model.request.PageRequestOL;
 import com.odettelane.inventario.persistence.entity.Garment;
 import com.odettelane.inventario.model.dto.GarmentDto;
 import com.odettelane.inventario.persistence.mapper.GarmentMapper;
@@ -10,7 +12,6 @@ import com.odettelane.inventario.repository.GarmentRepository;
 import com.odettelane.inventario.service.GarmentService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -29,20 +30,16 @@ public class GarmentServiceImpl implements GarmentService {
     }
 
     @Override
-    public Garment create(@NotNull Garment garment) throws AttributeNotProvidedException {
-        if (garment.getSizeId() == null) throw new AttributeNotProvidedException("size");
-        if (garment.getColorId() == null) throw new AttributeNotProvidedException("color");
-        if (garment.getFabricId() == null) throw new AttributeNotProvidedException("fabric");
-        if (garment.getCategoryId() == null) throw new AttributeNotProvidedException("category");
-        if (garment.getTypeId() == null) garment.setTypeId(1);
+    public List<GarmentDto> getAll(PageRequestOL pageRequestOL) throws AttributeNotProvidedException, NotNegativeAttributeException {
+        if (pageRequestOL.getPageNumber() == null || pageRequestOL.getPageSize() == null){
+            throw new AttributeNotProvidedException("page request");
+        }
+        if (pageRequestOL.getPageNumber() < 0 || pageRequestOL.getPageSize() < 0){
+            throw new NotNegativeAttributeException("Page request");
+        }
 
-        return repository.save(garment);
-    }
-
-    @Override
-    public List<GarmentDto> getAll(GarmentPageRequest pageRequest){
-        List<Garment> garments = repository.findAll(PageRequest.of(pageRequest.getPageNumber(),
-                pageRequest.getPageSize(),
+        List<Garment> garments = repository.findAll(org.springframework.data.domain.PageRequest.of(pageRequestOL.getPageNumber(),
+                pageRequestOL.getPageSize(),
                 Sort.by("garment")))
                 .toList();
         //List<Garment> garments = repository.findAll();
@@ -50,14 +47,47 @@ public class GarmentServiceImpl implements GarmentService {
     }
 
     @Override
-    public GarmentDto read(Integer garmentId) throws IdNotProvidedException {
+    public GarmentDto read(Integer garmentId) throws IdNotProvidedException, ItemNotFoundException {
         if (garmentId == null) throw new IdNotProvidedException("Cannot read without providing an id");
         return mapper.garmentToDto(findById(garmentId));
     }
 
     @Override
-    public Garment update(Garment garment, Integer id) throws IdNotProvidedException {
+    public Garment getGarment(Integer garmentId) throws IdNotProvidedException, ItemNotFoundException {
+        if (garmentId == null) throw new IdNotProvidedException("Cannot read without providing an id");
+        return findById(garmentId);
+    }
+
+    @Override
+    public Garment create(@NotNull Garment garment) throws AttributeNotProvidedException, NotNegativeAttributeException {
+        if (garment.getSizeId() == null) throw new AttributeNotProvidedException("size");
+        if (garment.getColorId() == null) throw new AttributeNotProvidedException("color");
+        if (garment.getFabricId() == null) throw new AttributeNotProvidedException("fabric");
+        if (garment.getCategoryId() == null) throw new AttributeNotProvidedException("category");
+        if (garment.getTypeId() == null) garment.setTypeId(1);
+
+        if (garment.getSizeId() < 0 ||
+            garment.getColorId() < 0 ||
+            garment.getFabricId() < 0 ||
+            garment.getCategoryId() < 0 ||
+            garment.getTypeId() < 0){
+            throw new NotNegativeAttributeException();
+        }
+
+        return repository.save(garment);
+    }
+
+    @Override
+    public Garment update(@NotNull Garment garment, Integer id) throws IdNotProvidedException, NotNegativeAttributeException, ItemNotFoundException {
         if (id == null) throw new IdNotProvidedException("Cannot update without providing an id");
+
+        /*if (garment.getSizeId() < 0 ||
+                garment.getColorId() < 0 ||
+                garment.getFabricId() < 0 ||
+                garment.getCategoryId() < 0 ||
+                garment.getTypeId() < 0){
+            throw new NotNegativeAttributeException();
+        }*/
 
         Garment oldGarment = findById(id);
 
@@ -73,7 +103,7 @@ public class GarmentServiceImpl implements GarmentService {
     }
 
     @Override
-    public String delete(Integer garmentId) throws IdNotProvidedException {
+    public String delete(Integer garmentId) throws IdNotProvidedException, ItemNotFoundException {
         if (garmentId == null) throw new IdNotProvidedException("Cannot delete without providing an id");
 
         repository.delete(findById(garmentId));
@@ -82,8 +112,8 @@ public class GarmentServiceImpl implements GarmentService {
 
     }
 
-    private Garment findById(Integer id){
+    private Garment findById(Integer id) throws ItemNotFoundException {
         Optional<Garment> optionalGarment = repository.findById(id);
-        return optionalGarment.orElseThrow(() -> new RuntimeException("Garment not found with that id"));
+        return optionalGarment.orElseThrow(() -> new ItemNotFoundException("Garment"));
     }
 }

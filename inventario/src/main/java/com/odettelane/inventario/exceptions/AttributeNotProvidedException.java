@@ -5,6 +5,6 @@ public class AttributeNotProvidedException extends Exception{
         super("You must provide an apropiate atributte");
     }
     public AttributeNotProvidedException(String attribute) {
-        super("You must provide an appropriate " + attribute);
+        super("You must provide an appropriate " + attribute + ".");
     }
 }

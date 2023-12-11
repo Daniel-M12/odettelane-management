@@ -13,6 +13,6 @@ public interface SizeService {
     List<SizeDto> getAll();
     Size create(SizeDto sizeDto) throws AttributeNotProvidedException;
     SizeDto read(Integer sizeId) throws IdNotProvidedException;
-    SizeDto update(SizeDto size, Integer id) throws IdNotProvidedException, AttributeNotProvidedException;
+    SizeDto update(SizeDto sizeDto, Integer id) throws IdNotProvidedException, AttributeNotProvidedException;
     String delete(Integer sizeId) throws IdNotProvidedException;
 }

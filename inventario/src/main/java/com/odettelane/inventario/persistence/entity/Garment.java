@@ -52,4 +52,8 @@ public class Garment {
     @JoinColumn(name = "\"tipo_co_id_tipo\"", insertable = false, updatable = false)
     @JsonIgnore
     private Type type;
+
+    @OneToOne(mappedBy = "garment")
+    //@JsonIgnore
+    private Inventory inventory;
 }
