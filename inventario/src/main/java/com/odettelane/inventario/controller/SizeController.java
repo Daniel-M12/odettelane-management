@@ -1,5 +1,9 @@
 package com.odettelane.inventario.controller;
 
+import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
+import com.odettelane.inventario.exceptions.IdNotProvidedException;
+import com.odettelane.inventario.exceptions.ItemNotFoundException;
+import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
 import com.odettelane.inventario.model.dto.SizeDto;
 import com.odettelane.inventario.persistence.entity.Size;
 import com.odettelane.inventario.service.SizeService;
@@ -23,7 +27,7 @@ public class SizeController {
         try {
             return new ResponseEntity<>(sizeService.getAll(), HttpStatus.OK);
         } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -31,24 +35,24 @@ public class SizeController {
     public ResponseEntity<?> getSize(@PathVariable Integer sizeId){
         try {
             return new ResponseEntity<>(sizeService.read(sizeId),HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody SizeDto sizeDto){
-        if (sizeDto != null){
-            try {
-                Size newSize = sizeService.create(sizeDto);
-
-                return new ResponseEntity<>(newSize, HttpStatus.OK);
-
-            } catch (Exception e) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            Size newSize = sizeService.create(sizeDto);
+            return new ResponseEntity<>(newSize, HttpStatus.OK);
+        } catch (AttributeNotProvidedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,10 +60,13 @@ public class SizeController {
     public ResponseEntity<?> update(@RequestBody SizeDto sizeDto, @PathVariable Integer sizeId){
         try {
             SizeDto updatedSize = sizeService.update(sizeDto, sizeId);
-
             return new ResponseEntity<>(updatedSize, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException | AttributeNotProvidedException | NotNegativeAttributeException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,8 +74,12 @@ public class SizeController {
     public ResponseEntity<?> delete(@PathVariable Integer sizeId){
         try {
             return new ResponseEntity<>(sizeService.delete(sizeId), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
