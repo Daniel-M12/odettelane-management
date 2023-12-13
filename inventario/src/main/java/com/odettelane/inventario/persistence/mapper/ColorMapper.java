@@ -14,9 +14,17 @@ public abstract class ColorMapper {
                 .primaryColor(color.getPrimaryColor())
                 .build();
 
-        if (color.getSecondaryColor() != null){
+        if (color.getSecondaryColor() != null && !color.getSecondaryColor().isEmpty()){
             colorDto.setSecondaryColor(color.getSecondaryColor());
             colorDto.setDistribution(color.getDistribution());
+        }
+
+        if (color.getDistribution() != null && !color.getDistribution().isEmpty()){
+            colorDto.setDistribution(colorDto.getDistribution());
+        }
+
+        if (color.getDistribution() != null && color.getDistribution().isEmpty()){
+            colorDto.setDistribution(null);
         }
 
         return colorDto;

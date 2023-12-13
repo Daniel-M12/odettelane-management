@@ -1,5 +1,9 @@
 package com.odettelane.inventario.controller;
 
+import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
+import com.odettelane.inventario.exceptions.IdNotProvidedException;
+import com.odettelane.inventario.exceptions.ItemNotFoundException;
+import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
 import com.odettelane.inventario.model.dto.ColorDto;
 import com.odettelane.inventario.persistence.entity.Color;
 import com.odettelane.inventario.service.ColorSerivice;
@@ -23,32 +27,32 @@ public class ColorController {
         try {
             return new ResponseEntity<>(colorSerivice.getAll(), HttpStatus.OK);
         } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{colorId}")
-    public ResponseEntity<?> getGarment(@PathVariable Integer colorId){
+    public ResponseEntity<?> getColor(@PathVariable Integer colorId){
         try {
             return new ResponseEntity<>(colorSerivice.read(colorId),HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody ColorDto colorDto){
-        if (colorDto != null){
-            try {
-                Color newColor = colorSerivice.create(colorDto);
-
-                return new ResponseEntity<>(newColor, HttpStatus.OK);
-
-            } catch (Exception e) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            Color newColor = colorSerivice.create(colorDto);
+            return new ResponseEntity<>(newColor, HttpStatus.OK);
+        } catch (AttributeNotProvidedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,10 +60,13 @@ public class ColorController {
     public ResponseEntity<?> update(@RequestBody ColorDto colorDto, @PathVariable Integer colorId){
         try {
             ColorDto updatedColor = colorSerivice.update(colorDto, colorId);
-
             return new ResponseEntity<>(updatedColor, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException | AttributeNotProvidedException | NotNegativeAttributeException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,8 +74,12 @@ public class ColorController {
     public ResponseEntity<?> delete(@PathVariable Integer colorId){
         try {
             return new ResponseEntity<>(colorSerivice.delete(colorId), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

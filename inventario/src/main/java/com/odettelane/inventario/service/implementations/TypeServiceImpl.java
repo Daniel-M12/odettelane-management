@@ -2,6 +2,8 @@ package com.odettelane.inventario.service.implementations;
 
 import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
+import com.odettelane.inventario.exceptions.ItemNotFoundException;
+import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
 import com.odettelane.inventario.model.dto.TypeDto;
 import com.odettelane.inventario.persistence.entity.Type;
 import com.odettelane.inventario.persistence.mapper.TypeMapper;
@@ -31,6 +33,13 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
+    public TypeDto read(Integer typeId) throws IdNotProvidedException, ItemNotFoundException {
+        if (typeId == null) throw new IdNotProvidedException("Cannot read without providing an id");
+
+        return mapper.typeToDto(findById(typeId));
+    }
+
+    @Override
     public Type create(TypeDto typeDto) throws AttributeNotProvidedException {
         if (typeDto.getType() == null) throw new AttributeNotProvidedException("type");
 
@@ -38,22 +47,19 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
-    public TypeDto read(Integer typeId) throws IdNotProvidedException {
-        if (typeId == null) throw new IdNotProvidedException("Cannot read without providing an id");
-
-        return mapper.typeToDto(findById(typeId));
-    }
-
-    @Override
-    public TypeDto update(TypeDto typeDto, Integer id) throws IdNotProvidedException, AttributeNotProvidedException {
+    public TypeDto update(TypeDto typeDto, Integer id) throws IdNotProvidedException, AttributeNotProvidedException, NotNegativeAttributeException, ItemNotFoundException {
         if (id == null) throw new IdNotProvidedException("Cannot update without providing an id");
+        if (id < 0 ) throw new NotNegativeAttributeException("Id");
         if (typeDto.getType() == null) throw new AttributeNotProvidedException("type");
+
+        findById(id); //Used to know if the type exists
+        typeDto.setId(id);
 
         return mapper.typeToDto(repository.save(mapper.dtoToType(typeDto)));
     }
 
     @Override
-    public String delete(Integer typeId) throws IdNotProvidedException {
+    public String delete(Integer typeId) throws IdNotProvidedException, ItemNotFoundException {
         if (typeId == null) throw new IdNotProvidedException("Cannot delete without providing an id");
 
         repository.delete(findById(typeId));
@@ -61,8 +67,8 @@ public class TypeServiceImpl implements TypeService {
         return repository.findById(typeId).isEmpty()? "Type removed successfully": "Type could not be removed";
     }
 
-    private Type findById(Integer id){
+    private Type findById(Integer id) throws ItemNotFoundException {
         Optional<Type> optionalType = repository.findById(id);
-        return optionalType.orElseThrow(() -> new RuntimeException("Type not found with that id"));
+        return optionalType.orElseThrow(() -> new ItemNotFoundException("Type"));
     }
 }

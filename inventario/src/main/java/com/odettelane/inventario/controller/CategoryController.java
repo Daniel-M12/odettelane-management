@@ -1,5 +1,9 @@
 package com.odettelane.inventario.controller;
 
+import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
+import com.odettelane.inventario.exceptions.IdNotProvidedException;
+import com.odettelane.inventario.exceptions.ItemNotFoundException;
+import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
 import com.odettelane.inventario.model.dto.CategoryDto;
 import com.odettelane.inventario.persistence.entity.Category;
 import com.odettelane.inventario.service.CategoryService;
@@ -23,7 +27,7 @@ public class CategoryController {
         try {
             return new ResponseEntity<>(categoryService.getAll(), HttpStatus.OK);
         } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -31,24 +35,24 @@ public class CategoryController {
     public ResponseEntity<?> getCategory(@PathVariable Integer categoryId){
         try {
             return new ResponseEntity<>(categoryService.read(categoryId),HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody CategoryDto categoryDto){
-        if (categoryDto != null){
-            try {
-                Category newCategory = categoryService.create(categoryDto);
-
-                return new ResponseEntity<>(newCategory, HttpStatus.OK);
-
-            } catch (Exception e) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            Category newCategory = categoryService.create(categoryDto);
+            return new ResponseEntity<>(newCategory, HttpStatus.OK);
+        } catch (AttributeNotProvidedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,10 +60,13 @@ public class CategoryController {
     public ResponseEntity<?> update(@RequestBody CategoryDto categoryDto, @PathVariable Integer categoryId){
         try {
             CategoryDto updatedCategory = categoryService.update(categoryDto, categoryId);
-
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException | AttributeNotProvidedException | NotNegativeAttributeException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,8 +74,12 @@ public class CategoryController {
     public ResponseEntity<?> delete(@PathVariable Integer categoryId){
         try {
             return new ResponseEntity<>(categoryService.delete(categoryId), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

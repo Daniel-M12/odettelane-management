@@ -2,6 +2,8 @@ package com.odettelane.inventario.service.implementations;
 
 import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
 import com.odettelane.inventario.exceptions.IdNotProvidedException;
+import com.odettelane.inventario.exceptions.ItemNotFoundException;
+import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
 import com.odettelane.inventario.model.dto.ColorDto;
 import com.odettelane.inventario.persistence.entity.Color;
 import com.odettelane.inventario.persistence.mapper.ColorMapper;
@@ -31,6 +33,13 @@ public class ColorServiceImpl implements ColorSerivice {
     }
 
     @Override
+    public ColorDto read(Integer colorId) throws IdNotProvidedException, ItemNotFoundException {
+        if (colorId == null) throw new IdNotProvidedException("Cannot read without providing an id");
+
+        return mapper.colorToDto(findById(colorId));
+    }
+
+    @Override
     public Color create(ColorDto colorDto) throws AttributeNotProvidedException {
         if (colorDto.getPrimaryColor() == null) throw new AttributeNotProvidedException("primary color");
 
@@ -38,26 +47,33 @@ public class ColorServiceImpl implements ColorSerivice {
     }
 
     @Override
-    public ColorDto read(Integer colorId) throws IdNotProvidedException {
-        if (colorId == null) throw new IdNotProvidedException("Cannot read without providing an id");
-
-        return mapper.colorToDto(findById(colorId));
-    }
-
-    @Override
-    public ColorDto update(ColorDto colorDto, Integer id) throws IdNotProvidedException, AttributeNotProvidedException {
+    public ColorDto update(ColorDto colorDto, Integer id) throws IdNotProvidedException, AttributeNotProvidedException, NotNegativeAttributeException, ItemNotFoundException {
         if (id == null) throw new IdNotProvidedException("Cannot update without providing an id");
+        if (id < 0 ) throw new NotNegativeAttributeException("Id");
         if (colorDto.getPrimaryColor() == null &&
         colorDto.getSecondaryColor() == null &&
         colorDto.getDistribution() == null) {
             throw new AttributeNotProvidedException();
         }
 
+        Color oldColor = findById(id);
+        if (colorDto.getPrimaryColor() == null) {
+            colorDto.setPrimaryColor(oldColor.getPrimaryColor());
+        }
+        if (colorDto.getSecondaryColor() == null && oldColor.getSecondaryColor() != null) {
+            colorDto.setSecondaryColor(oldColor.getSecondaryColor());
+        }
+        if (colorDto.getDistribution() == null && oldColor.getDistribution() != null) {
+            colorDto.setDistribution(oldColor.getDistribution());
+        }
+
+        colorDto.setId(id);
+
         return mapper.colorToDto(repository.save(mapper.dtoToColor(colorDto)));
     }
 
     @Override
-    public String delete(Integer colorId) throws IdNotProvidedException {
+    public String delete(Integer colorId) throws IdNotProvidedException, ItemNotFoundException {
         if (colorId == null) throw new IdNotProvidedException("Cannot delete without providing an id");
 
         repository.delete(findById(colorId));
@@ -65,8 +81,8 @@ public class ColorServiceImpl implements ColorSerivice {
         return repository.findById(colorId).isEmpty()? "Color removed successfully": "Color could not be removed";
     }
 
-    private Color findById(Integer id){
+    private Color findById(Integer id) throws ItemNotFoundException {
         Optional<Color> optionalColor = repository.findById(id);
-        return optionalColor.orElseThrow(() -> new RuntimeException("Color not found with that id"));
+        return optionalColor.orElseThrow(() -> new ItemNotFoundException("Color"));
     }
 }

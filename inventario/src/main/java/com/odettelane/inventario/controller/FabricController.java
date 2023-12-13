@@ -1,5 +1,9 @@
 package com.odettelane.inventario.controller;
 
+import com.odettelane.inventario.exceptions.AttributeNotProvidedException;
+import com.odettelane.inventario.exceptions.IdNotProvidedException;
+import com.odettelane.inventario.exceptions.ItemNotFoundException;
+import com.odettelane.inventario.exceptions.NotNegativeAttributeException;
 import com.odettelane.inventario.model.dto.FabricDto;
 import com.odettelane.inventario.persistence.entity.Fabric;
 import com.odettelane.inventario.service.FabricService;
@@ -23,7 +27,7 @@ public class FabricController {
         try {
             return new ResponseEntity<>(fabricService.getAll(), HttpStatus.OK);
         } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -31,24 +35,51 @@ public class FabricController {
     public ResponseEntity<?> getFabric(@PathVariable Integer fabricId){
         try {
             return new ResponseEntity<>(fabricService.read(fabricId),HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IdNotProvidedException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody FabricDto fabricDto) {
-        if (fabricDto != null) {
-            try {
-                Fabric newFabric = fabricService.create(fabricDto);
+        try {
+            Fabric newFabric = fabricService.create(fabricDto);
+            return new ResponseEntity<>(newFabric, HttpStatus.OK);
+        } catch (AttributeNotProvidedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-                return new ResponseEntity<>(newFabric, HttpStatus.OK);
+    @PutMapping("/{fabricId}")
+    public ResponseEntity<?> update(@RequestBody FabricDto fabricDto, @PathVariable Integer fabricId){
+        try {
+            FabricDto updatedFabric = fabricService.update(fabricDto, fabricId);
+            return new ResponseEntity<>(updatedFabric, HttpStatus.OK);
+        } catch (IdNotProvidedException | AttributeNotProvidedException | NotNegativeAttributeException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-            } catch (Exception e) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/{fabricId}")
+    public ResponseEntity<?> delete(@PathVariable Integer fabricId){
+        try {
+            return new ResponseEntity<>(fabricService.delete(fabricId), HttpStatus.OK);
+        } catch (IdNotProvidedException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ItemNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
