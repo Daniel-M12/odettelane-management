@@ -26,7 +26,7 @@
 CREATE SCHEMA inventario;
 
 
-ALTER SCHEMA inventario OWNER TO postgres;
+--ALTER SCHEMA inventario OWNER TO postgres;
 
 --
 -- TOC entry 3679 (class 0 OID 0)
@@ -52,7 +52,7 @@ CREATE TABLE inventario.categoria (
 );
 
 
-ALTER TABLE inventario.categoria OWNER TO postgres;
+--ALTER TABLE inventario.categoria OWNER TO postgres;
 
 --
 -- TOC entry 212 (class 1259 OID 99099)
@@ -68,7 +68,7 @@ CREATE SEQUENCE inventario.categoria_co_id_categoria_seq
     CACHE 1;
 
 
-ALTER TABLE inventario.categoria_co_id_categoria_seq OWNER TO postgres;
+--ALTER TABLE inventario.categoria_co_id_categoria_seq OWNER TO postgres;
 
 --
 -- TOC entry 3680 (class 0 OID 0)
@@ -92,7 +92,7 @@ CREATE TABLE inventario.color (
 );
 
 
-ALTER TABLE inventario.color OWNER TO postgres;
+--ALTER TABLE inventario.color OWNER TO postgres;
 
 --
 -- TOC entry 214 (class 1259 OID 99103)
@@ -108,7 +108,7 @@ CREATE SEQUENCE inventario.color_co_id_color_seq
     CACHE 1;
 
 
-ALTER TABLE inventario.color_co_id_color_seq OWNER TO postgres;
+--ALTER TABLE inventario.color_co_id_color_seq OWNER TO postgres;
 
 --
 -- TOC entry 3681 (class 0 OID 0)
@@ -132,7 +132,7 @@ CREATE TABLE inventario.inventario (
 );
 
 
-ALTER TABLE inventario.inventario OWNER TO postgres;
+--ALTER TABLE inventario.inventario OWNER TO postgres;
 
 --
 -- TOC entry 216 (class 1259 OID 99108)
@@ -148,7 +148,7 @@ CREATE SEQUENCE inventario.inventario_co_id_inventario_seq
     CACHE 1;
 
 
-ALTER TABLE inventario.inventario_co_id_inventario_seq OWNER TO postgres;
+--ALTER TABLE inventario.inventario_co_id_inventario_seq OWNER TO postgres;
 
 --
 -- TOC entry 3682 (class 0 OID 0)
@@ -175,7 +175,7 @@ CREATE TABLE inventario.prenda (
 );
 
 
-ALTER TABLE inventario.prenda OWNER TO postgres;
+--ALTER TABLE inventario.prenda OWNER TO postgres;
 
 --
 -- TOC entry 218 (class 1259 OID 99112)
@@ -191,7 +191,7 @@ CREATE SEQUENCE inventario.prenda_co_id_prenda_seq
     CACHE 1;
 
 
-ALTER TABLE inventario.prenda_co_id_prenda_seq OWNER TO postgres;
+--ALTER TABLE inventario.prenda_co_id_prenda_seq OWNER TO postgres;
 
 --
 -- TOC entry 3683 (class 0 OID 0)
@@ -213,7 +213,7 @@ CREATE TABLE inventario.talla (
 );
 
 
-ALTER TABLE inventario.talla OWNER TO postgres;
+--ALTER TABLE inventario.talla OWNER TO postgres;
 
 --
 -- TOC entry 220 (class 1259 OID 99116)
@@ -229,7 +229,7 @@ CREATE SEQUENCE inventario.talla_co_id_talla_seq
     CACHE 1;
 
 
-ALTER TABLE inventario.talla_co_id_talla_seq OWNER TO postgres;
+--ALTER TABLE inventario.talla_co_id_talla_seq OWNER TO postgres;
 
 --
 -- TOC entry 3684 (class 0 OID 0)
@@ -251,7 +251,7 @@ CREATE TABLE inventario.tela (
 );
 
 
-ALTER TABLE inventario.tela OWNER TO postgres;
+--ALTER TABLE inventario.tela OWNER TO postgres;
 
 --
 -- TOC entry 222 (class 1259 OID 99120)
@@ -267,7 +267,7 @@ CREATE SEQUENCE inventario.tela_co_id_tela_seq
     CACHE 1;
 
 
-ALTER TABLE inventario.tela_co_id_tela_seq OWNER TO postgres;
+--ALTER TABLE inventario.tela_co_id_tela_seq OWNER TO postgres;
 
 --
 -- TOC entry 3685 (class 0 OID 0)
@@ -289,7 +289,7 @@ CREATE TABLE inventario.tipo (
 );
 
 
-ALTER TABLE inventario.tipo OWNER TO postgres;
+--ALTER TABLE inventario.tipo OWNER TO postgres;
 
 --
 -- TOC entry 224 (class 1259 OID 99124)
@@ -305,7 +305,7 @@ CREATE SEQUENCE inventario.tipo_co_id_tipo_seq
     CACHE 1;
 
 
-ALTER TABLE inventario.tipo_co_id_tipo_seq OWNER TO postgres;
+--ALTER TABLE inventario.tipo_co_id_tipo_seq OWNER TO postgres;
 
 --
 -- TOC entry 3686 (class 0 OID 0)
