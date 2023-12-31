@@ -25,7 +25,7 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> getAll(@RequestBody PageRequestOL pageRequestOL){
         try {
             return new ResponseEntity<>(inventoryService.getAll(pageRequestOL), HttpStatus.OK);

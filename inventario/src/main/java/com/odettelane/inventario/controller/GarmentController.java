@@ -22,7 +22,7 @@ public class GarmentController {
         this.garmentService = garmentService;
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> getAll(@RequestBody PageRequestOL pageRequestOL){
         try {
             return new ResponseEntity<>(garmentService.getAll(pageRequestOL), HttpStatus.OK);
