@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sizes")
+@CrossOrigin
 public class SizeController {
     private final SizeService sizeService;
 
